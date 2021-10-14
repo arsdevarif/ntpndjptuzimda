@@ -16,7 +16,7 @@
 (function() {
     'use strict';
  console.log('TamperMonkey proses.. ')
-    let tahun="2021";
+    let tahun="2022";
     var namaskpd="";
     let nmkeg="";
     let npwp="";
@@ -116,7 +116,7 @@
                                         '</div>'+
                                     '</div>'+
                                '</div>';
-                               
+
     createButtonParent.appendChild(node);
     let btnPostNtpn = document.getElementById("btnPostNTPN_ToSimda");
     btnPostNtpn.addEventListener("click",PostNTPN_toSimda);
