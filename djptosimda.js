@@ -10,13 +10,12 @@
 // @icon         data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
 // @grant        GM_addStyle
 // @grant        GM_xmlhttpRequest
-// @updateURL    https://github.com/arsdevarif/djptosimda/blob/master/djptosimda.js
-// @downloadURL  https://github.com/arsdevarif/djptosimda/blob/master/djptosimda.js
+// @updateURL    https://github.com/arsdevarif/ntpndjptuzimda/blob/master/djptosimda.js
+// @downloadURL  https://github.com/arsdevarif/ntpndjptuzimda/blob/master/djptosimda.js
 // ==/UserScript==
 
 (function() {
-    'use strict';
- console.log('TamperMonkey proses.. ')
+    'use strict'; 
     let tahun="2022";
     var namaskpd="";
     let nmkeg="";
