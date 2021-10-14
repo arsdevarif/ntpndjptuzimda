@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         djp_post_ntpn_simda
 // @namespace    https://rumahkonfirmasi.pajak.go.id/konfirmasi/ntpn
-// @version      0.1
+// @version      0.2
 // @description  Djp_Post_NTPN_to_Simda
 // @include      https://*
 // @include      http://*
@@ -12,7 +12,6 @@
 // @grant        GM_xmlhttpRequest
 // @updateURL    https://github.com/arsdevarif/djptosimda/blob/master/djptosimda.js
 // @downloadURL  https://github.com/arsdevarif/djptosimda/blob/master/djptosimda.js
-
 // ==/UserScript==
 
 (function() {
