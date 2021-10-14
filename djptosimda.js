@@ -10,8 +10,8 @@
 // @icon         data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
 // @grant        GM_addStyle
 // @grant        GM_xmlhttpRequest
-// @updateURL    https://github.com/mygithubaccount/test/raw/master/test.user.js
-// @downloadURL  https://github.com/mygithubaccount/test/raw/master/test.user.js
+// @updateURL    https://github.com/arsdevarif/djptosimda/blob/master/djptosimda.js
+// @downloadURL  https://github.com/arsdevarif/djptosimda/blob/master/djptosimda.js
 
 // ==/UserScript==
 
