@@ -1,10 +1,8 @@
 // ==UserScript==
 // @name         djp_post_ntpn_simda
 // @namespace    https://rumahkonfirmasi.pajak.go.id/konfirmasi/ntpn
-// @version      0.3
+// @version      0.1
 // @description  Djp_Post_NTPN_to_Simda
-// @include      https://*
-// @include      http://*
 // @author       arsdev
 // @match        https://rumahkonfirmasi.pajak.go.id/konfirmasi/ntpn
 // @icon         data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
@@ -15,8 +13,9 @@
 // ==/UserScript==
 
 (function() {
-    'use strict'; 
-    let tahun="2022";
+    'use strict';
+ console.log('TamperMonkey proses.. ')
+    let tahun="2021";
     var namaskpd="";
     let nmkeg="";
     let npwp="";
@@ -26,6 +25,8 @@
     let nmpot="";
     let nilpjksimda=""
     let kodemapsimda="";
+    let ntpnsimda="";
+    let kdbillingsimda="";
     //Start disni
     let FormNPWP = document.getElementsByClassName('form-group row')[0];
     let createNode = FormNPWP.parentNode.parentNode;
@@ -53,11 +54,21 @@
              '</label>'+
            '</div>'+
         '</div>'+
-        '<div class="col-md-1"></div>'+
+         '<div class="col-md-1"></div>'+
+        '<label class="col-md-4 col-form-label label-rumkon" style="text-align: right;" >Kode SKPD [contoh Diknas :1,1,1,1]</label>'+
+        '<div class="col-md-5" >'+
+        '<div class="row col-md-12"  >'+
+        '<input class="col-md-2 form-control" type="number" id="txtKdurusan" name="txtkdurusan"   placeholder="Kdurusan" style="margin-right:5pt" value=0 >'+
+        '<input class="col-md-2 form-control"  type="number" id="txtKdbidang" name="txtkdbidang"   placeholder="Kdbidang" style="margin-right:5pt" value=0>'+
+        '<input class="col-md-2 form-control"  type="number" id="txtKdunit" name="txtkdunit"   placeholder="Kdunit"  style="margin-right:5pt" value=0>'+
+        '<input class="col-md-2 form-control"  type="number" id="txtKdsub" name="txtkdsub"  placeholder="Kdsubunit" value=0>'+
+        '</div>'+
+        '</div>'+
+        '<div class="col-md-1"  ></div>'+
         '<label class="col-md-4 col-form-label label-rumkon" style="text-align: right;" >Parameter Nomor Bukti Simda</label>'+
         '<div class="col-md-5" >'+
-        '<input type="text" id="txtNobuktiSimda" name="txtnobuktisimda" class="form-control"'+
-        'placeholder="Bukti (Bukti Kas atau Nomor SP2D">'+
+        '<input type="text" style="margin-top:5pt" id="txtNobuktiSimda" name="txtnobuktisimda" class="form-control"'+
+        'placeholder="Bukti (Bukti Kas atau Nomor SPM)">'+
         '</div>'+
         '<div class="col-md-1"></div>'+
         '<label class="col-md-4 col-form-label label-rumkon" style="text-align: right;" >Data NTPN Didapat </label>'+
@@ -93,9 +104,15 @@
         '<br/>'+
         '<label id="DetailNmpot"></label>'+
         '<br/>'+
+        '<label id="DetailKodeBillingSimda"></label>'+
+        '<br/>'+
         '<label id="DetailNilpjksimda"></label>'+
         '<br/>'+
         '<label id="DetailKodeMapsimda"></label>'+
+        '<br/>'+
+        '<label id="DetailNtpnSimda"></label>'+
+        '<br/>'+
+        '<label id="StatusPost" style="font-weight:bold ;color:green"></label>'+
         '</div>';
     createNode.appendChild(nodeNpwp);
     let createButton = document.getElementById('form_konfirmasintpn');
@@ -116,7 +133,6 @@
                                         '</div>'+
                                     '</div>'+
                                '</div>';
-
     createButtonParent.appendChild(node);
     let btnPostNtpn = document.getElementById("btnPostNTPN_ToSimda");
     btnPostNtpn.addEventListener("click",PostNTPN_toSimda);
@@ -126,6 +142,17 @@
         let dtKdmapToPost=document.getElementById("kodeJnsPjk").textContent;
         let dtNpwpToPost=document.getElementById("npwp3").textContent;
         let dtJnsbelanja= document.querySelector('input[name="flexRadioDefault"]:checked').value;
+        document.getElementById('DetailNmkeg').textContent="";
+        document.getElementById('DetailNmrek').textContent="";
+        document.getElementById('DetailNobukti').textContent="";
+        document.getElementById('DetailNilblj').textContent="";
+        document.getElementById('DetailNmpot').textContent="";
+        document.getElementById('DetailNilpjksimda').textContent="";
+        document.getElementById('DetailKodeMapsimda').textContent="";
+        document.getElementById('DetailNtpnSimda').textContent="";
+        document.getElementById('DetailKodeBillingSimda').textContent="";
+        document.getElementById('StatusPost').textContent="";
+        document.getElementById('StatusPost').append(`${'Proses Posting NTPN data SIMDA ..'}`);;
         console.log("http://localhost:2200/ntpn/postntpndjptosimda?ntpn="+dtNtpnToPost+"&tglbyrpajak="+dtTglbyrPajakToPost+"&kdmap="+dtKdmapToPost+
              "&npwp="+dtNpwpToPost+"&nobukti="+nobukti+"&tahun="+tahun+"&jnsbelanja="+dtJnsbelanja,);
           GM_xmlhttpRequest ({
@@ -141,8 +168,44 @@
     }
     function response_PostNTPN(res){
        console.log(res.response);
-       var dt=res.response;
-       alert("Hasil : "+ JSON.stringify(dt.message));
+       var dt=res.response.data;
+       var message=res.response.message;
+       //alert("Hasil : "+ JSON.stringify(dt.message));
+       document.getElementById('StatusPost').textContent="";
+       document.getElementById('StatusPost').textContent=message;
+        var dtResult=JSON.stringify(dt);
+        console.log(res.response);
+        namaskpd=dt[0].nmskpd;
+        nmkeg=dt[0].nmkeg;
+        nmrek=dt[0].nmrek;
+        nobukti=dt[0].nobukti;
+        nilblj= parseInt(dt[0].nilblj,10);
+        nmpot=dt[0].nmpot;
+        kodemapsimda=dt[0].kodemap;
+        nilpjksimda=dt[0].nilpjksimda;
+        ntpnsimda=dt[0].ntpn;
+        kdbillingsimda=dt[0].kdbilling;
+        var nmkegskpd =(`Kegiatan : ${nmkeg}` );
+        let nodeNmkegsimda = document.getElementById('DetailNmkeg');
+        nodeNmkegsimda.append(nmkegskpd);
+        var nmreksimda =(`Rekening : ${nmrek}` );
+        let nodeNmreksimda = document.getElementById('DetailNmrek');
+        nodeNmreksimda.append(nmreksimda);
+        var nobuktismda =(`No.Bukti : ${nobukti}` );
+        let nodeNobukti = document.getElementById('DetailNobukti');
+        nodeNobukti.append(nobuktismda);
+        var nilbljsimda =(`Nilai Belanja : ${nilblj}` );
+        let nodeNilblj = document.getElementById('DetailNilblj');
+        nodeNilblj.append(nilbljsimda);
+        var nmpotsimda =(`Nama Potongan : ${nmpot}` );
+        let nodeNopotsimda = document.getElementById('DetailNmpot');
+        nodeNopotsimda.append(nmpotsimda);
+        var nilpjksimda =(`Nilai Pajak : ${nilpjksimda}` );
+        let nodeNilpjksimd = document.getElementById('DetailNilpjksimda');
+        nodeNilpjksimd.append(nilpjksimda);
+        document.getElementById('DetailKodeMapsimda').append(`Kode Map Simda : ${kodemapsimda}`);
+        document.getElementById('DetailNtpnSimda').append(`NTPN Terekam di Simda : ${ntpnsimda}`);
+        document.getElementById('DetailKodeBillingSimda').append(`Kode Billing Terekam di Simda : ${kdbillingsimda}`);
     }
     //Try and build a ticket
     function recordTheThing(){
@@ -203,10 +266,16 @@
         document.getElementById('DataNPWP_PostToSimda').append(`NPWP : ${npwpGet}`);
         let nobukti = document.getElementById('txtNobuktiSimda').value;
         let jnsbelanja = document.querySelector('input[name="flexRadioDefault"]:checked').value;
+        let kdurusan = document.getElementById('txtKdurusan').value;
+        let kdbidang = document.getElementById('txtKdbidang').value;
+        let kdunit = document.getElementById('txtKdunit').value;
+        let kdsub = document.getElementById('txtKdsub').value;
         document.getElementById('prosesGetDataSimda').append(`${'Proses sinkronisasi data SIMDA ..'}`);;
         GM_xmlhttpRequest ({
             method:         "GET",
-            url:            "http://localhost:2200/ntpn/getdetailpajaksimda?npwp="+npwpGet+"&kdmap="+kdmapGet+"&nobukti="+nobukti+"&tahun="+tahun+"&jnsbelanja="+jnsbelanja,
+            url:            "http://localhost:2200/ntpn/getdetailpajaksimda?npwp="+npwpGet+"&kdmap="+kdmapGet+
+            "&nobukti="+nobukti+"&tahun="+tahun+"&jnsbelanja="+jnsbelanja+
+            "&kdurusan="+kdurusan+"&kdbidang="+kdbidang+"&kdunit="+kdunit+"&kdsub="+kdsub,
             responseType:   "json",
             onload:         response_detailPajakSimda,
             onabort:        reportAJAX_Error,
@@ -237,6 +306,8 @@
         nmpot=dt[0].nmpot;
         kodemapsimda=dt[0].kodemap;
         nilpjksimda=dt[0].nilpjksimda;
+        ntpnsimda=dt[0].ntpn;
+        kdbillingsimda=dt[0].kdbilling;
         var nmskpdsimda =(`Skpd : ${namaskpd}` );
         let nodeNmskpd = document.getElementById('DetailNmskpd');
         nodeNmskpd.append(nmskpdsimda);
@@ -259,12 +330,23 @@
         let nodeNilpjksimd = document.getElementById('DetailNilpjksimda');
         nodeNilpjksimd.append(nilpjksimda);
         document.getElementById('DetailKodeMapsimda').append(`Kode Map Simda : ${kodemapsimda}`);
+        document.getElementById('DetailNtpnSimda').append(`NTPN Terekam di Simda : ${ntpnsimda}`);
+        document.getElementById('DetailKodeBillingSimda').append(`Kode Billing Terekam di Simda : ${kdbillingsimda}`);
+        if(document.getElementById("ntpn").textContent==ntpnsimda){
+             document.getElementById('StatusPost').textContent="";
+             document.getElementById('StatusPost').textContent="Data NTPN DPJ sudah sama dengan Data NTPN SIMDA !";
+        }else {
+            document.getElementById('StatusPost').textContent="";
+            document.getElementById('StatusPost').textContent="Silakan POST Data NTPN ke SIMDA !";
+        }
+
 
     }
     let btnCariPageDjp = document.getElementById("btnSubmitKonfNtpn");
     btnCariPageDjp.addEventListener("click",GetProfilNPWP_SKPD_Simda);
     function GetProfilNPWP_SKPD_Simda(){
         document.getElementById('DataNTPN_PostToSimda').textContent="";
+        document.getElementById('DataNPWP_PostToSimda').textContent="";
         document.getElementById('DataUraianPajak_PostToSimda').textContent="";
         document.getElementById('DataNilaiPajak_PostToSimda').textContent="";
         document.getElementById('DataTglPajak_PostToSimda').textContent="";
@@ -277,6 +359,9 @@
         document.getElementById('DetailNmpot').textContent="";
         document.getElementById('DetailNilpjksimda').textContent="";
         document.getElementById('DetailKodeMapsimda').textContent="";
+        document.getElementById('DetailNtpnSimda').textContent="";
+        document.getElementById('DetailKodeBillingSimda').textContent="";
+        document.getElementById('StatusPost').textContent="";
         let ntpnValue = document.getElementById('txtkeyword').value;
         GM_xmlhttpRequest ({
             method:         "GET",
